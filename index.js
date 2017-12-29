@@ -12,7 +12,7 @@ let jwtOptions = {
 
 let strategy = new passportJwt.Strategy(jwtOptions, function (payload, next) {
   models.User.findOne({where: {id: payload.id}}).then(function (user) {
-    next(null, user);
+    next(null, user.dataValues);
   }).catch(function (err) {
     next(err, null);
   })
@@ -28,7 +28,8 @@ app.use(bodyParser.json());
 
 app.get('/', passport.authenticate('jwt', { session: false }), function (req, res) {
   res.send({
-    msg: 'server is running.'
+    msg: 'server is running.',
+    id: req.user.id
   })
 });
 
