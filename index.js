@@ -3,7 +3,8 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const passportJwt = require('passport-jwt');
 const passport = require('passport');
-let models = require('./models');
+const chalk = require('chalk');
+const models = require('./models');
 
 let jwtOptions = {
   jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -45,12 +46,14 @@ app.post('/login', function (req, res) {
     if (password === user.dataValues.password) {
       let token = jwt.sign({ id: user.dataValues.id }, jwtOptions.secretOrKey);
       res.send({ token });
-    }
+    } else {
+	  res.status(400).send({code: -1, msg: 'username or password didn\'t match.'});
+	}
   }).catch(function (err) {
-    res.send(err);
+    res.status(400).send({ code: -1, msg: 'no such username' });
   })
 });
 
 app.listen(3000, function () {
-  console.log('server is running on port 3000.');
+  console.log(chalk.green('server is running on port 3000.'));
 });

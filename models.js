@@ -6,6 +6,10 @@ let sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, proc
   dialect: 'mysql'
 });
 
+sequelize.sync({
+  force: false
+});
+
 exports.User = sequelize.define('user', {
   username: Sequelize.STRING,
   password: Sequelize.STRING
