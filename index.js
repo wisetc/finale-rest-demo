@@ -3,8 +3,10 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const passportJwt = require('passport-jwt');
 const passport = require('passport');
+const finale = require('finale-rest');
 const chalk = require('chalk');
-const models = require('./models');
+const sequelize = require('./models').sequelize;
+const models = require('./models').models;
 
 let jwtOptions = {
   jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -53,6 +55,25 @@ app.post('/login', function (req, res) {
     res.status(400).send({ code: -1, msg: 'no such username' });
   })
 });
+
+finale.initialize({
+  app,
+  sequelize
+});
+
+finale.resource({
+  model: models.Inspecting,
+  endpoints: ['/inspectings', '/inspectings/:id']
+})
+  .all.auth(function (req, res, context) {
+    return new Promise((resolve, reject) => {
+      passport.authenticate('jwt', { session: false })(req, res, function (error) {
+        if (!error) {
+          resolve(context.continue);
+        }
+      });
+    });
+  });
 
 app.listen(3000, function () {
   console.log(chalk.green('server is running on port 3000.'));
