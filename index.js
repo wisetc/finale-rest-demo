@@ -61,19 +61,21 @@ finale.initialize({
   sequelize
 });
 
+const finaleAuth = (req, res, context) => {
+  return new Promise((resolve, reject) => {
+    passport.authenticate('jwt', { session: false })(req, res, function (error) {
+      if (!error) {
+        resolve(context.continue);
+      }
+    });
+  });
+}
+
 finale.resource({
   model: models.Inspecting,
   endpoints: ['/inspectings', '/inspectings/:id']
 })
-  .all.auth(function (req, res, context) {
-    return new Promise((resolve, reject) => {
-      passport.authenticate('jwt', { session: false })(req, res, function (error) {
-        if (!error) {
-          resolve(context.continue);
-        }
-      });
-    });
-  });
+  .all.auth(finaleAuth);
 
 app.listen(3000, function () {
   console.log(chalk.green('server is running on port 3000.'));

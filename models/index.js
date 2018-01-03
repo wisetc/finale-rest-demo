@@ -23,8 +23,15 @@ fs.readdirSync(__dirname)
     models[model.name] = model;
   });
 
+Object.keys(models).forEach(modelName => {
+  if (models[modelName].associate) {
+    models[modelName].associate(models);
+  }
+});
+
 sequelize.sync({
-  force: false
+  force: false,
+  match: /.*lab$/
 });
 
 module.exports = {

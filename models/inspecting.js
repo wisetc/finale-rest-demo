@@ -1,12 +1,19 @@
 module.exports = (sequelize, DateTypes) => {
-  return sequelize.define('Inspecting', {
-    inspecting_batch: DateTypes.STRING,
-    material_id: DateTypes.INTEGER,
+  var Inspecting = sequelize.define('Inspecting', {
     auditing_man: DateTypes.STRING,
     auditing_date: DateTypes.DATE,
-    status: DateTypes.ENUM('1', '2', '3', '-2', '-3'),
+    status: DateTypes.ENUM('待检验', '检验完成', '审核通过', '审核不通过'),
     remark: DateTypes.STRING,
-    material_batch_no: DateTypes.STRING,
+    batch: DateTypes.STRING,
     approve_suggestion: DateTypes.STRING
   });
+
+  Inspecting.associate = (models) => {
+    models.Inspecting.belongsTo(models.BatchMaterial, {
+      onDelete: "CASCADE",
+      foreignKey: 'batch_material_id'
+    });
+  }
+
+  return Inspecting;
 };
