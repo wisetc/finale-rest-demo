@@ -6,7 +6,10 @@ module.exports = (sequelize, DataTypes) => {
   BatchMaterial.associate = (models) => {
     models.BatchMaterial.belongsTo(models.BasicMaterial, {
       onDelete: "CASCADE",
-      foreignKey: 'basic_material_id'
+      foreignKey: {
+        name: 'basic_material_id',
+        allowNull: false
+      }
     });
   }
 

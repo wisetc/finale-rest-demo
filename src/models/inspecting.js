@@ -11,7 +11,10 @@ module.exports = (sequelize, DateTypes) => {
   Inspecting.associate = (models) => {
     models.Inspecting.belongsTo(models.BatchMaterial, {
       onDelete: "CASCADE",
-      foreignKey: 'batch_material_id'
+      foreignKey: {
+        name: 'batch_material_id',
+        allowNull: false
+      }
     });
   }
 
