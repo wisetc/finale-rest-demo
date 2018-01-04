@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const morgan = require('morgan');
 
 const routes = require('./routes');
 const passport = require('./provider').passport;
@@ -11,5 +12,6 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(routes);
+app.use(morgan('dev'));
 
 module.exports = app;
